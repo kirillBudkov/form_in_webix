@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="http://cdn.webix.com/edge/webix.css" type="text/css">  
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="http://cdn.webix.com/edge/webix.js" type="text/javascript"></script> 
+</head>
+<body>
+	<div id="app-container"></div>
+	<script type="text/javascript" charset="utf-8">
+  var counter1=0;
+  var counter2=0;
+  var formW = webix.ui({
+  
+	container: "app-container",
+    view:"form",
+    width: 600,
+    align: "center",
+    borderless:true,
+    type: "clean",
+    css: "formW",
+    elements:[
+    {
+        view:"tabview",
+        tabbar:{ options:["YOUR PERSONAL INFO","YOUR LOCATION INFO","CONTACTS"]}, animate:false,
+        cells:[
+            { id:"YOUR PERSONAL INFO", rows:[
+                {view: "label", label:"First name"},
+                {view:"text", name: "firstName", required:true, on:{"onBlur":"blurEv" }, invalidMessage: "First Name can not be empty" },
+                {view: "label", label:"Last name"},
+                { view:"text", name:"lastName", required:true, on:{"onBlur":"blurEv" }, invalidMessage: "Last Name can not be empty"},
+                {view: "label", label:"Patronymic"},
+                { view:"text", name:"patronymic", required:true, on:{"onBlur":"blurEv" }, invalidMessage: "Patronymic can not be empty"},
+                {view: "label", label:"Your Birthday"},
+                { view:"datepicker", required:true,
+                  suggest:{
+                  type:"calendar", 
+                  body:{
+                    maxDate:new Date()
+                  }
+                }}
+              ]},
+            { id:"YOUR LOCATION INFO", rows:[
+                  {view: "label", label:"Country"},
+                  { view:"text", name:"country", required:true,on:{"onBlur":"blurEv" }, invalidMessage: "Country can not be empty"},
+                  {view: "label", label:"Sity"},
+                  { view:"text", name:"sity", required:true,on:{"onBlur":"blurEv" }, invalidMessage: "Sity can not be empty"},
+                  {view: "label", label:"Timezone"},
+                  { view:"text", name:"timezone", required:true, on:{"onBlur":"blurEv" }, invalidMessage: "Timezone can not be empty"},
+            ]},
+            { id:"CONTACTS", rows:[
+                  { view:"fieldset",label:"PHONES", type: "clean", body:{
+                    rows:[
+                   {view: "label", label:"Phone"}, 
+                  { view:"text", name:"phone", required:true, on:{"onBlur":"blurEv" }, invalidMessage: "Write you phone like 123456789098", validate: webix.rules.isNumber},
+                  { view:"button",inputWidth:100 ,value:"ADD PHONE", click:function(){
+                      counter1++;
+                      this.getParentView().addView(
+                      {view: "label", label:"Aditional phone"+counter1})
+                      this.getParentView().addView( 
+                      {view:"text", name:"phone"+counter1, validate: webix.rules.isNumber, invalidMessage: "Write you phone like 123456789098", on:{"onBlur":"blurEv" }}
+                      );
+                  }},
+                    ]
+                  }},
+                  { view:"fieldset", label:"EMAILS", body:{
+                     rows:[
+                        {view: "label", label:"Email"},
+                        { view:"text", name:"email", required:true, validate:webix.rules.isEmail, on:{"onBlur":"blurEv" }, invalidMessage: "Write email like example@example.example"},
+                        { view:"button",inputWidth:100 ,value:"ADD EMAIL", click:function(){
+                            counter2++;
+                            this.getParentView().addView(
+                            {view: "label", label:"Aditional email"+counter2})
+                            this.getParentView().addView( 
+                            {view:"text", name:"email"+counter2, validate:webix.rules.isEmail, invalidMessage: "Write email like example@example.example", on:{"onBlur":"blurEv" }}
+                            );
+                        }}
+                    ]
+                  }},
+                  
+            ]}
+        ]
+
+    },
+  
+        {view: "label", label:"password"},
+        { view:"text", type:"password", name:"password", required:true,on:{"onBlur":"blurEv" }, invalidMessage: "password can not be empty"},
+        {view: "label", label:"confirm password"},
+        { view:"text", type:"password", name:"confPass", required:true, invalidMessage: "Confirm password"},
+        { view:"button", value: "Submit", inputWidth:100, click:"submitForm"},
+    
+],
+rules: {
+    confPass: function (value) {
+        var mPass=formW.elements["password"].getValue();
+        return value===mPass },
+    timezone: webix.rules.isNumber,
+
+}
+});
+
+function submitForm() {
+    if (this.getParentView().validate({hidden: true})) {
+      var formForSend= formW.getValues();
+      console.log(JSON.stringify(formForSend))
+    }
+      
+    else
+        webix.message({ type:"error", text:"Form data is invalid" });
+};
+function blurEv() {
+     this.validate() 
+};
+	</script>
+</body>
+</html>

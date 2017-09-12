@@ -1,0 +1,8 @@
+#app-container {
+	width: 700px;
+	margin: 20px;
+}
+
+.webix_el_label {
+	text-transform: uppercase !important
+}
